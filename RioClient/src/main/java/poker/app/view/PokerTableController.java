@@ -1,6 +1,8 @@
 package poker.app.view;
 
 import java.net.URL;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import javafx.animation.FadeTransition;
@@ -18,6 +20,7 @@ import javafx.scene.layout.HBox;
 import javafx.util.Duration;
 import poker.app.MainApp;
 import pokerBase.Action;
+import pokerBase.Player;
 import pokerBase.Table;
 import pokerEnums.eAction;
 import pokerEnums.ePlayerPosition;
@@ -79,11 +82,10 @@ public class PokerTableController implements Initializable {
 	@FXML
 	private HBox hboxP4Cards;
 
-
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		imgViewDealerButtonPos3.setVisible(true);
-		imgViewDealerButtonPos4.setVisible(true);		
+		imgViewDealerButtonPos4.setVisible(true);
 	}
 
 	public void setMainApp(MainApp mainApp) {
@@ -103,6 +105,7 @@ public class PokerTableController implements Initializable {
 	public void btnSitLeave_Click(ActionEvent event) {
 		ToggleButton btnSitLeave = (ToggleButton) event.getSource();
 		int iPlayerPosition = 0;
+		System.out.println(btnSitLeave.getId());
 		if (btnSitLeave.isSelected()) {
 			switch (btnSitLeave.getId().toString()) {
 			case "btnPos1SitLeave":
@@ -121,11 +124,11 @@ public class PokerTableController implements Initializable {
 		} else {
 			iPlayerPosition = 0;
 		}
-
-		//	Set the PlayerPosition in the Player
+		System.out.println(iPlayerPosition);
+		// Set the PlayerPosition in the Player
 		mainApp.getPlayer().setiPlayerPosition(iPlayerPosition);
 
-		//	Build an Action message
+		// Build an Action message
 		Action act = new Action(btnSitLeave.isSelected() ? eAction.Sit : eAction.Leave, mainApp.getPlayer());
 
 		// Send the Action to the Hub
@@ -148,7 +151,84 @@ public class PokerTableController implements Initializable {
 		//TODO: run the 'getHashPlayers' method, iterate 
 		//		for all players and update the player label
 		//		and state of the sit/leave button.
-
+		/**
+		 * .setVisible(false) makes the buttons visible
+		 */
+		btnPos1SitLeave.setVisible(false);
+		btnPos2SitLeave.setVisible(false);
+		btnPos3SitLeave.setVisible(false);
+		btnPos4SitLeave.setVisible(false);
+	
+		btnPos1SitLeave.setText(btnPos1SitLeave.isSelected() ? "Leave": "Sit");
+		btnPos2SitLeave.setText(btnPos2SitLeave.isSelected() ? "Leave": "Sit");
+		btnPos3SitLeave.setText(btnPos3SitLeave.isSelected() ? "Leave": "Sit");
+		btnPos4SitLeave.setText(btnPos4SitLeave.isSelected() ? "Leave": "Sit");
+	
+		
+		Iterator it = HubPokerTable.getHashPlayers().entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry pair = (Map.Entry) it.next();
+			Player p = (Player)pair.getValue();
+			
+			if (p.getiPlayerPosition() == 1){
+				
+				if(p.getPlayerID() == mainApp.getPlayer().getPlayerID()){
+					btnPos1SitLeave.setVisible(false);
+					btnPos2SitLeave.setVisible(!false);
+					btnPos3SitLeave.setVisible(!false);
+					btnPos4SitLeave.setVisible(!false);
+				
+					btnPos1SitLeave.setText("Leave");
+				}
+				else{
+					btnPos1SitLeave.setVisible(!false);
+				}
+				lblPos1Name.setText(p.getPlayerName());
+			}
+			
+			else if (p.getiPlayerPosition() == 2){
+				if(p.getPlayerID() == mainApp.getPlayer().getPlayerID()){
+					btnPos1SitLeave.setVisible(!false);
+					btnPos2SitLeave.setVisible(!true);
+					btnPos3SitLeave.setVisible(!false);
+					btnPos4SitLeave.setVisible(!false);
+				
+					btnPos2SitLeave.setText("Leave");
+				}
+				else{
+					btnPos2SitLeave.setVisible(!false);
+				}
+				lblPos2Name.setText(p.getPlayerName());
+			}
+			else if (p.getiPlayerPosition() == 3){
+				if(p.getPlayerID() == mainApp.getPlayer().getPlayerID()){
+					btnPos1SitLeave.setVisible(true);
+					btnPos2SitLeave.setVisible(true);
+					btnPos3SitLeave.setVisible(false);
+					btnPos4SitLeave.setVisible(true);
+				
+					btnPos3SitLeave.setText("Leave");
+				}
+				else{
+					btnPos3SitLeave.setVisible(!false);
+				}
+				lblPos3Name.setText(p.getPlayerName());
+			}
+			else if (p.getiPlayerPosition() == 4){
+				if(p.getPlayerID() == mainApp.getPlayer().getPlayerID()){
+					btnPos1SitLeave.setVisible(!false);
+					btnPos2SitLeave.setVisible(!false);
+					btnPos3SitLeave.setVisible(!false);
+					btnPos4SitLeave.setVisible(!true);
+				
+					btnPos4SitLeave.setText("Leave");
+				}
+				else{
+					btnPos4SitLeave.setVisible(!false);
+				}
+				lblPos4Name.setText(p.getPlayerName());
+			}
+		}
 		//		Example: Joe sits at Position 1
 		//		Joe should see the 'Sit' button in position 1 in the
 		//		'pressed in' state, and with 
@@ -157,8 +237,8 @@ public class PokerTableController implements Initializable {
 	@FXML
 	void btnStart_Click(ActionEvent event) {
 		// Start the Game
-		//TODO: Create an instance of Action, Action = StartGame
-		//		Send the message to the hub
+		// TODO: Create an instance of Action, Action = StartGame
+		// Send the message to the hub
 	}
 
 	@FXML
@@ -231,6 +311,5 @@ public class PokerTableController implements Initializable {
 
 		ft.play();
 	}
-
 
 }

@@ -27,5 +27,7 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="src" path="/RioBLL"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/RioJabber"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
